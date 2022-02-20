@@ -10,7 +10,7 @@ Per la costruzione e definizione del database è stato utilizzato PostgreSQL
 Per la stesura della documentazione si è fatto uso dell'applicativo LaTex
 > il 'Progetto_OO_Documentazione.pdf' contiene la documentazione progettuale
 
-Per un corretto utilizzo dell'applicativo si consiglia l'implementazione del database oo_rubrica.sql nel programma PostgreSQL, altrimenti la crazione di un database omonimo utilizzando la struttura riportata nel file Database.sql
+Per un corretto utilizzo dell'applicativo si consiglia l'implementazione del database oo_rubrica.sql nel programma PostgreSQL creato secondo la struttura riportata nel file 'OO_RUBRICA.txt'
 
 AUTORI:
 - Mercorio Gianluigi N86003834
