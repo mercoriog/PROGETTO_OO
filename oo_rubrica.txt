@@ -1,0 +1,181 @@
+--CREAZIONE TABELLE
+--creazione tabella contatto
+CREATE TABLE CONTATTO( 
+ Cod_Contatto  INTEGER       NOT NULL, 
+ Nome          VARCHAR(100)  NOT NULL, 
+ Cognome       VARCHAR(100)  NOT NULL);
+
+--creazione tabella indirizzo 
+CREATE TABLE INDIRIZZO(
+ Cod_Indirizzo SERIAL       NOT NULL,
+ Via           VARCHAR(100) NOT NULL, 
+ Cap           INTEGER      NOT NULL,
+ Nazione       VARCHAR(100) NOT NULL,
+ Citta         VARCHAR(100) NOT NULL,
+ Cod_Contatto  INTEGER      NOT NULL);
+
+--creazione tabella gruppo 
+CREATE TABLE GRUPPO( 
+ Nome           VARCHAR(100)  NOT NULL, 
+ Descrizione    VARCHAR(1000) NOT NULL,
+ Categoria      VARCHAR(100)  NOT NULL); 
+
+--creazione tabella afferenza 
+CREATE TABLE AFFERENZA( 
+Cod_Contatto    SERIAL          NOT NULL, 
+Nome_Gruppo     VARCHAR(100)    NOT NULL);
+
+--creazione tabella email 
+CREATE TABLE EMAIL( 
+Cod_Email       SERIAL          NOT NULL, 
+Indirizzo       VARCHAR(100)    NOT NULL,  
+Cod_Contatto    SERIAL          NOT NULL); 
+
+--creazione tabella fornitore 
+CREATE TABLE FORNITORE( 
+Nome              VARCHAR(100)   NOT NULL, 
+Categoria         VARCHAR(100)   NOT NULL, 
+Casa_Produttrice  VARCHAR(100)   NOT NULL); 
+
+--creazione tabella account 
+CREATE TABLE ACCOUNT( 
+Nickname          VARCHAR(100)   NOT NULL, 
+Frase_benvenuto   VARCHAR(100), 
+Nome              VARCHAR(100)   NOT NULL, 
+Cognome           VARCHAR(100)   NOT NULL, 
+Nome_Fornitore    VARCHAR(100)   NOT NULL, 
+Cod_Email         INTEGER        NOT NULL);
+
+--creazione tabella telefono_mobile 
+CREATE TABLE TELEFONO_MOBILE( 
+CodN_Mobile      INTEGER            NOT NULL, 
+Numero_Mobile	 VARCHAR(100)		NOT NULL,
+Cod_Contatto     INTEGER            NOT NULL);
+
+--creazione tabella telefono_fisso 
+CREATE TABLE TELEFONO_FISSO( 
+CodN_Fisso        INTEGER           NOT NULL, 
+Numero_Fisso	  VARCHAR(100)		NOT NULL,
+Cod_Contatto      INTEGER           NOT NULL);
+
+--creazione tabella reindirizzamento 
+CREATE TABLE REINDIRIZZAMENTO( 
+CodN_Fisso      SERIAL      NOT NULL, 
+CodN_Mobile     SERIAL      NOT NULL);
+
+--PRIMARY KEY 
+--vincolo chiave primaria tabella CONTATTO 
+ALTER TABLE CONTATTO
+  ADD CONSTRAINT PK_CONTATTO PRIMARY KEY(Cod_Contatto); 
+
+
+--vincolo chiave primaria tabella INDIRIZZO 
+ALTER TABLE INDIRIZZO
+  ADD CONSTRAINT PK_INDIRIZZO PRIMARY KEY(Cod_Indirizzo); 
+
+
+--vincolo chiave primaria tabella GRUPPO 
+ALTER TABLE GRUPPO
+  ADD CONSTRAINT PK_GRUPPO PRIMARY KEY(Nome); 
+
+
+--vincolo chiave primaria tabella EMAIL 
+ALTER TABLE EMAIL
+  ADD CONSTRAINT PK_EMAIL PRIMARY KEY(Cod_Email); 
+
+
+--vincolo chiave primaria tabella FORNITORE 
+ALTER TABLE FORNITORE 
+  ADD CONSTRAINT PK_FORNITORE PRIMARY KEY(Nome); 
+ 
+
+--vincolo chiave primaria tabella ACCOUNT 
+ALTER TABLE ACCOUNT
+  ADD CONSTRAINT PK_ACCOUNT PRIMARY KEY(Nickname); 
+
+
+--vincolo chiave primaria tabella TELEFONO_MOBILE 
+ALTER TABLE TELEFONO_MOBILE
+  ADD CONSTRAINT PK_TELEFONOM PRIMARY KEY(CodN_Mobile); 
+
+--vincolo chiave primaria tabella TELEFONO_FISSO 
+ALTER TABLE TELEFONO_FISSO
+  ADD CONSTRAINT PK_TELEFONOF PRIMARY KEY(CodN_Fisso); 
+
+
+--FOREIGN KEY 
+
+--vincoli chiave esterna tabella AFFERENZA 
+ALTER TABLE AFFERENZA
+  ADD CONSTRAINT FK_AFFERENZA_CONTATTO FOREIGN KEY(Cod_Contatto) 
+       REFERENCES CONTATTO(Cod_Contatto) ON DELETE CASCADE;
+
+
+ALTER TABLE AFFERENZA 
+  ADD CONSTRAINT FK_AFFERENZA_GRUPPO FOREIGN KEY(Nome_Gruppo) 
+       REFERENCES GRUPPO(Nome) ON DELETE CASCADE;
+
+
+--vincolo chiave esterna tabella EMAIL 
+ ALTER TABLE EMAIL
+   ADD CONSTRAINT FK_EMAIL_CONTATTO FOREIGN KEY(Cod_Contatto) 
+    REFERENCES CONTATTO(Cod_Contatto) ON DELETE CASCADE;
+
+
+--vincoli chiave esterna tabella ACCOUNT
+ALTER TABLE ACCOUNT 
+  ADD CONSTRAINT FK_ACCOUNT_NOME_F FOREIGN KEY(Nome_Fornitore)
+    REFERENCES FORNITORE(Nome) ON DELETE CASCADE;
+
+
+ALTER TABLE ACCOUNT
+  ADD CONSTRAINT FK_ACCOUNT_EMAIL FOREIGN KEY(Cod_Email)
+    REFERENCES EMAIL(Cod_Email) ON DELETE CASCADE; 
+
+--vincolo chiave esterna INDIRIZZO 
+ ALTER TABLE INDIRIZZO
+    ADD CONSTRAINT FK_INDIRIZZO FOREIGN KEY(Cod_Contatto) 
+     REFERENCES CONTATTO(Cod_Contatto) ON DELETE CASCADE; 
+
+ 
+--vincolo chiave esterna TELEFONO_FISSO 
+ ALTER TABLE TELEFONO_FISSO
+    ADD CONSTRAINT FK_TELEFONOF FOREIGN KEY(Cod_Contatto) 
+     REFERENCES CONTATTO(Cod_Contatto) ON DELETE CASCADE; 
+  
+
+--vincolo chiave esterna tabella TELEFONO_MOBILE 
+ALTER TABLE TELEFONO_MOBILE
+  ADD CONSTRAINT FK_TELEFONOM FOREIGN KEY(Cod_Contatto) 
+     REFERENCES CONTATTO(Cod_Contatto) ON DELETE CASCADE;
+
+
+--vincoli chiave esterna tabella REINDIRIZZAMENTO 
+ALTER TABLE REINDIRIZZAMENTO
+  ADD CONSTRAINT FK_REINDIRIZZAMENTO_TF FOREIGN KEY(CodN_Fisso) 
+    REFERENCES TELEFONO_FISSO(CodN_Fisso) ON DELETE CASCADE;
+
+
+ALTER TABLE REINDIRIZZAMENTO
+  ADD CONSTRAINT FK_REINDIRIZZAMENTO_TM FOREIGN KEY(CodN_Mobile) 
+    REFERENCES TELEFONO_MOBILE(CodN_Mobile) ON DELETE CASCADE;
+    
+--vincoli UNIQUE
+--vincolo unique tabella AFFERENZA
+ALTER TABLE AFFERENZA
+ADD CONSTRAINT UNIQUE_CON_GROUP
+    UNIQUE(Cod_Contatto, Nome_Gruppo);
+
+--vincolo unique tabella EMAIL 
+ALTER TABLE EMAIL
+  ADD CONSTRAINT U_EMAIL UNIQUE(Cod_Email,Cod_Contatto);
+
+
+--vincolo unique tabella ACCOUNT 
+ALTER TABLE ACCOUNT
+  ADD CONSTRAINT U_ACCOUNT UNIQUE(Nome_Fornitore,Cod_Email); 
+ 
+--vincolo unique tabella REINIDIRIZZAMENTO
+ALTER TABLE REINDIRIZZAMENTO
+ADD CONSTRAINT U_TF_TM
+UNIQUE(CodN_Fisso, CodN_Mobile)
